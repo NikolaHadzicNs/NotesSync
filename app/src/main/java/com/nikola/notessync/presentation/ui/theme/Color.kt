@@ -1,4 +1,4 @@
-package com.nikola.notessync.ui.theme
+package com.nikola.notessync.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

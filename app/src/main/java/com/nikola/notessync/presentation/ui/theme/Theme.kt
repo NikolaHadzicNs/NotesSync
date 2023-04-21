@@ -1,4 +1,4 @@
-package com.nikola.notessync.ui.theme
+package com.nikola.notessync.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
