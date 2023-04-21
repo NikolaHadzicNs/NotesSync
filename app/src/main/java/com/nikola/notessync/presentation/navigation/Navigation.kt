@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.nikola.notessync.presentation.main.MainScreen
+import com.nikola.notessync.presentation.note_detail.NoteDetailScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -12,6 +13,11 @@ fun NavGraph(navController: NavHostController) {
 
         composable(route = Screen.MainScreen.route) {
             MainScreen(navController = navController)
+        }
+
+        composable(route = Screen.NoteDetailScreen.route + "/{id}") {
+            val id = it.arguments?.getString("id")
+            NoteDetailScreen(navController = navController, noteId = id)
         }
     }
 }

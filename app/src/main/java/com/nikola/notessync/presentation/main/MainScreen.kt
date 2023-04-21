@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nikola.notessync.data.MockRepo
 import com.nikola.notessync.data.Note
+import com.nikola.notessync.presentation.navigation.Screen
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
 @Composable
@@ -24,24 +25,28 @@ fun MainScreen(navController: NavController) {
         columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
         items(MockRepo.notes.size) { i ->
-            NoteCard(note = MockRepo.notes[i])
+            NoteCard(
+                note = MockRepo.notes[i]
+            ) {
+                navController.navigate(Screen.NoteDetailScreen.route + "/$i")
+            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteCard(note: Note) {
+fun NoteCard(note: Note, clicked: () -> Unit) {
     Card(
         modifier = Modifier
             .aspectRatio(1f)
-            .padding(8.dp), onClick = {
-
+            .padding(8.dp),
+        onClick = {
+            clicked()
         }) {
         Text(
             modifier = Modifier
-                .padding(8.dp)
-            ,text = note.title
+                .padding(8.dp), text = note.title
         )
 
         Text(
