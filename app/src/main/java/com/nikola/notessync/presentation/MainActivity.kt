@@ -9,7 +9,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 import com.nikola.notessync.presentation.main.MainScreen
+import com.nikola.notessync.presentation.navigation.NavGraph
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,12 +19,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             NotesSyncTheme {
+                val navController = rememberNavController()
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen()
+                    NavGraph(navController = navController)
                 }
             }
         }
@@ -33,6 +36,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     NotesSyncTheme {
-        MainScreen()
+        MainScreen(rememberNavController())
     }
 }

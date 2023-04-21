@@ -9,15 +9,19 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.nikola.notessync.data.MockRepo
 import com.nikola.notessync.data.Note
+import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavController) {
     LazyVerticalGrid(
         modifier = Modifier.padding(8.dp),
-        columns = GridCells.Adaptive(minSize = 100.dp)
+        columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
         items(MockRepo.notes.size) { i ->
             NoteCard(note = MockRepo.notes[i])
@@ -29,12 +33,28 @@ fun MainScreen() {
 @Composable
 fun NoteCard(note: Note) {
     Card(
-        modifier = Modifier.aspectRatio(1f).padding(8.dp)
-        ,onClick = {
+        modifier = Modifier
+            .aspectRatio(1f)
+            .padding(8.dp), onClick = {
 
-    }) {
-        Text(text = note.title)
+        }) {
+        Text(
+            modifier = Modifier
+                .padding(8.dp)
+            ,text = note.title
+        )
 
-        Text(text = note.content)
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = note.content
+        )
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun GreetingPreview() {
+    NotesSyncTheme {
+        MainScreen(rememberNavController())
     }
 }
