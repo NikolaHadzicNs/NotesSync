@@ -1,4 +1,4 @@
-package com.nikola.notessync.presentation.note_detail
+package com.nikola.notessync.presentation.scenes.note_detail
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

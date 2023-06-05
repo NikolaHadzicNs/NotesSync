@@ -1,6 +1,7 @@
 package com.nikola.notessync.data
 
 import androidx.compose.runtime.mutableStateListOf
+import com.nikola.notessync.domain.model.Note
 
 object MockRepo {
     val notes = mutableStateListOf<Note>()
@@ -11,8 +12,3 @@ object MockRepo {
         }
     }
 }
-
-data class Note(
-    var title: String,
-    var content: String
-)

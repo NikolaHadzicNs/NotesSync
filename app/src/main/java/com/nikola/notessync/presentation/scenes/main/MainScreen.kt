@@ -1,4 +1,4 @@
-package com.nikola.notessync.presentation.main
+package com.nikola.notessync.presentation.scenes.main
 
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nikola.notessync.data.MockRepo
-import com.nikola.notessync.data.Note
+import com.nikola.notessync.domain.model.Note
 import com.nikola.notessync.presentation.navigation.Screen
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
