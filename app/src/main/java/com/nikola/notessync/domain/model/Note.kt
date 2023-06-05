@@ -9,7 +9,7 @@ import com.nikola.notessync.presentation.ui.theme.NoteYellow
 
 @Entity
 data class Note(
-    @PrimaryKey(autoGenerate = true) val id: Int? = null,
+    @PrimaryKey(autoGenerate = true) var id: Int? = null,
     var title: String,
     var content: String,
     val date: Long,

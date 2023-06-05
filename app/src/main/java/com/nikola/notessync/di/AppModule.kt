@@ -8,6 +8,7 @@ import com.nikola.notessync.data.repository.NoteRepositoryImpl
 import com.nikola.notessync.domain.repository.NoteRepository
 import com.nikola.notessync.domain.use_case.AddNoteUseCase
 import com.nikola.notessync.domain.use_case.DeleteNoteUseCase
+import com.nikola.notessync.domain.use_case.GetNoteByIdUseCase
 import com.nikola.notessync.domain.use_case.GetNotesUseCase
 import com.nikola.notessync.domain.use_case.NoteUseCases
 import dagger.Module
@@ -42,7 +43,8 @@ object AppModule {
         return NoteUseCases(
             GetNotesUseCase(repository),
             DeleteNoteUseCase(repository),
-            AddNoteUseCase(repository)
+            AddNoteUseCase(repository),
+            GetNoteByIdUseCase(repository)
         )
     }
 
