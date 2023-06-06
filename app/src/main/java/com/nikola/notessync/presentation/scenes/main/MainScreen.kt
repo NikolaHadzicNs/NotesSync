@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -80,7 +81,13 @@ fun NoteCard(note: Note, clicked: () -> Unit) {
             .padding(8.dp),
         onClick = {
             clicked()
-        }) {
+        },
+        colors = CardDefaults.cardColors(
+            containerColor = Note.noteColors[note.noteColor],
+            contentColor = Note.fontColors[note.fontColor]
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+    ) {
         Text(
             modifier = Modifier
                 .padding(8.dp), text = note.title

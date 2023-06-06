@@ -32,24 +32,42 @@ class NoteDetailViewModel @Inject constructor(
             }
 
             is NoteDetailEvent.UpdateContent -> {
-                _state.value = state.value.copy(note = state.value.note.copy(content = event.content))
+                _state.value =
+                    state.value.copy(note = state.value.note.copy(content = event.content))
             }
+
             is NoteDetailEvent.UpdateTitle -> {
                 _state.value = state.value.copy(note = state.value.note.copy(title = event.title))
+            }
+
+            is NoteDetailEvent.ChangeBackground -> {
+                _state.value =
+                    state.value.copy(note = state.value.note.copy(noteColor = event.color))
+            }
+
+            is NoteDetailEvent.ChangeFontColor -> {
+                _state.value =
+                    state.value.copy(note = state.value.note.copy(fontColor = event.color))
             }
         }
     }
 
     fun getNote(id: Int?) {
         viewModelScope.launch {
-            id?.let {id->
+            id?.let { id ->
                 noteUseCases.getNoteById(id)?.let {
                     _state.value = state.value.copy(note = it)
                 } ?: run {
-                    _state.value = state.value.copy(titlePlaceHolder = "Enter title", contentPlaceHolder = "Enter content")
+                    _state.value = state.value.copy(
+                        titlePlaceHolder = "Enter title",
+                        contentPlaceHolder = "Enter content"
+                    )
                 }
             } ?: run {
-                _state.value = state.value.copy(titlePlaceHolder = "Enter title", contentPlaceHolder = "Enter content")
+                _state.value = state.value.copy(
+                    titlePlaceHolder = "Enter title",
+                    contentPlaceHolder = "Enter content"
+                )
             }
         }
     }
