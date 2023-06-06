@@ -22,7 +22,7 @@ class NoteDetailViewModel @Inject constructor(
         when (event) {
             is NoteDetailEvent.AddNote -> {
                 viewModelScope.launch {
-                    if (state.value.note.title.isNotEmpty() && state.value.note.content.isNotEmpty())
+                    if (state.value.note.title.isNotEmpty() || state.value.note.content.isNotEmpty())
                         noteUseCases.addNoteUseCase(state.value.note)
                 }
             }

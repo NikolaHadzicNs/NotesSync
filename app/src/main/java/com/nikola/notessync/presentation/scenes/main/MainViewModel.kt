@@ -37,6 +37,7 @@ class MainViewModel @Inject constructor(
                 }
             }
             is MainEvent.SearchNote -> {
+                _state.value = state.value.copy(search = event.search)
                 getNotes(event.search)
             }
         }

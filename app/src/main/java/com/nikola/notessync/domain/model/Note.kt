@@ -12,7 +12,7 @@ data class Note(
     @PrimaryKey(autoGenerate = true) var id: Int? = null,
     var title: String,
     var content: String,
-    val date: Long,
+    var date: Long,
     var fontStyle: Int,
     var theme: Int
 ) {

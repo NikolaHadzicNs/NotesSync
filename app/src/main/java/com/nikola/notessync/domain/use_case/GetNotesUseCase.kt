@@ -10,13 +10,15 @@ class GetNotesUseCase(
 ) {
     operator fun invoke(search: String = ""): Flow<List<Note>> {
         if (search.isEmpty()) {
-            return repository.getNotes()
+            return repository.getNotes().map { notes ->
+                notes.sortedByDescending { it.date }
+            }
         } else {
             return repository.getNotes().map { notes ->
                 notes.filter {
                     it.title.lowercase().contains(search, true) or
-                    it.content.lowercase().contains(search, true)
-                }.sortedBy { it.date }
+                            it.content.lowercase().contains(search, true)
+                }.sortedByDescending { it.date }
             }
         }
     }

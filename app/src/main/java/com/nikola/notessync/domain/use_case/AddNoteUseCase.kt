@@ -7,6 +7,7 @@ class AddNoteUseCase(
     private val repository: NoteRepository
 ) {
     suspend operator fun invoke(note: Note) {
+        note.date = System.currentTimeMillis()
         repository.insertNote(note)
     }
 }
