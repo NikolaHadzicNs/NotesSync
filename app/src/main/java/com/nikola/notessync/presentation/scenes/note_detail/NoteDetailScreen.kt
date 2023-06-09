@@ -43,6 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nikola.notessync.domain.model.Note
+import com.nikola.notessync.presentation.scenes.components.ColorChooser
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,65 +124,6 @@ fun NoteDetailScreen(
     BackHandler(true) {
         viewModel.onEvent(NoteDetailEvent.AddNote)
         navController.navigateUp()
-    }
-}
-
-@Composable
-fun ColorChooser(
-    selectedColor: Int,
-    selectedFontColor: Int,
-    selectNoteColor: (Int) -> Unit,
-    selectFontColor: (Int) -> Unit
-) {
-    var selectedNoteColorIndex by remember {
-        mutableStateOf(selectedColor)
-    }
-
-    var selectedFontColorIndex by remember {
-        mutableStateOf(selectedFontColor)
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)
-    ) {
-        Text(text = "Background")
-        LazyRow(
-            Modifier
-                .fillMaxWidth()
-                .selectableGroup()
-        ) {
-            items(Note.noteColors.size) {
-                Box(modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .border(1.dp, color = Color.Black, CircleShape)
-                    .background(color = Note.noteColors[it])
-                    .clickable {
-                        selectedNoteColorIndex = it
-                        selectNoteColor(selectedNoteColorIndex)
-                    })
-                Spacer(modifier = Modifier.width(24.dp))
-            }
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(text = "Font color")
-        LazyRow(Modifier.fillMaxWidth()) {
-            items(Note.fontColors.size) {
-                Box(modifier = Modifier
-                    .size(24.dp)
-                    .clip(CircleShape)
-                    .border(1.dp, color = Color.Black, CircleShape)
-                    .background(color = Note.fontColors[it])
-                    .clickable {
-                        selectedFontColorIndex = it
-                        selectFontColor(selectedFontColorIndex)
-                    })
-                Spacer(modifier = Modifier.width(24.dp))
-            }
-        }
     }
 }
 

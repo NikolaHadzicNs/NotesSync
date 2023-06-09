@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -25,8 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.nikola.notessync.domain.model.Note
 import com.nikola.notessync.presentation.navigation.Screen
+import com.nikola.notessync.presentation.scenes.components.AddNoteButton
+import com.nikola.notessync.presentation.scenes.components.NoteCard
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +57,7 @@ fun MainScreen(
         ) {
             items(state.notes.size + 1) { i ->
                 if (i == 0) {
-                    AddNote {
+                    AddNoteButton {
                         navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
                     }
                 } else {
@@ -69,65 +69,6 @@ fun MainScreen(
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NoteCard(note: Note, clicked: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .padding(8.dp),
-        onClick = {
-            clicked()
-        },
-        colors = CardDefaults.cardColors(
-            containerColor = Note.noteColors[note.noteColor],
-            contentColor = Note.fontColors[note.fontColor]
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(8.dp), text = note.title
-        )
-
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = note.content
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddNote(clicked: () -> Unit) {
-    Card(
-        modifier = Modifier
-            .aspectRatio(1f)
-            .padding(8.dp),
-        onClick = {
-            clicked()
-        }) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(8.dp), text = "Add note",
-                color = Color.DarkGray
-            )
-
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = "Add note",
-                modifier = Modifier.size(60.dp)
-            )
-        }
-
     }
 }
 
