@@ -1,5 +1,6 @@
 package com.nikola.notessync.presentation.scenes.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
@@ -24,8 +25,7 @@ fun NoteCard(note: Note, clicked: () -> Unit) {
         colors = CardDefaults.cardColors(
             containerColor = Note.noteColors[note.noteColor],
             contentColor = Note.fontColors[note.fontColor]
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+        )
     ) {
         Text(
             modifier = Modifier
