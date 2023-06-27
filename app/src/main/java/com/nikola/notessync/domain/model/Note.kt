@@ -8,7 +8,5 @@ data class Note(
     @PrimaryKey(autoGenerate = true) var id: Int? = null,
     var title: String,
     var content: String,
-    var date: Long,
-    var fontColor: Int,
-    var noteColor: Int
+    var date: Long
 )

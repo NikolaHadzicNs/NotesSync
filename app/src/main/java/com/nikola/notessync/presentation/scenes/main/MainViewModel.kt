@@ -28,10 +28,11 @@ class MainViewModel @Inject constructor(
     }
 
     fun onEvent(event: MainEvent) {
-        when(event) {
+        when (event) {
             is MainEvent.ClickNote -> {
 
             }
+
             is MainEvent.DeleteNote -> {
                 val list = mutableListOf<Note>()
                 _state.value = state.value.copy(selectedNotes = list)
@@ -39,6 +40,7 @@ class MainViewModel @Inject constructor(
                     noteUseCases.deleteNoteUseCase(event.note)
                 }
             }
+
             is MainEvent.SearchNote -> {
                 _state.value = state.value.copy(search = event.search)
                 getNotes(event.search)
@@ -72,7 +74,7 @@ class MainViewModel @Inject constructor(
                 _state.value = state.value.copy(
                     notes = notes,
                     search = search
-                    )
+                )
             }
             .launchIn(viewModelScope)
     }

@@ -39,16 +39,6 @@ class NoteDetailViewModel @Inject constructor(
             is NoteDetailEvent.UpdateTitle -> {
                 _state.value = state.value.copy(note = state.value.note.copy(title = event.title))
             }
-
-            is NoteDetailEvent.ChangeBackground -> {
-                _state.value =
-                    state.value.copy(note = state.value.note.copy(noteColor = event.color))
-            }
-
-            is NoteDetailEvent.ChangeFontColor -> {
-                _state.value =
-                    state.value.copy(note = state.value.note.copy(fontColor = event.color))
-            }
         }
     }
 
