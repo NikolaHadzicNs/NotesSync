@@ -1,24 +1,20 @@
 package com.nikola.notessync.presentation.scenes.main
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -64,7 +60,7 @@ fun MainScreen(
             }
         },
         floatingActionButtonPosition = FabPosition.End
-    ) {contentPadding ->
+    ) { contentPadding ->
         Column(
             Modifier
                 .fillMaxSize()
@@ -77,7 +73,27 @@ fun MainScreen(
                 onValueChange = { viewModel.onEvent(MainEvent.SearchNote(it)) },
                 placeholder = {
                     Text(text = "Search")
-                })
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = "Search icon")
+                },
+                trailingIcon = if (state.search.isNotEmpty()) {
+                    {
+                        IconButton(
+                            onClick =
+                            {
+                                viewModel.onEvent(MainEvent.SearchNote(""))
+                            }) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = "Clear icon"
+                            )
+                        }
+                    }
+                } else {
+                    null
+                }
+            )
 
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 150.dp)
