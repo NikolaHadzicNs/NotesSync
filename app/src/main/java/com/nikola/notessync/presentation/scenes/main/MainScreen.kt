@@ -1,5 +1,10 @@
 package com.nikola.notessync.presentation.scenes.main
 
+import android.content.Intent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,7 +13,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
@@ -21,16 +25,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nikola.notessync.presentation.navigation.Screen
+import com.nikola.notessync.presentation.scenes.components.BottomBar
 import com.nikola.notessync.presentation.scenes.components.NoteCard
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -39,27 +45,62 @@ fun MainScreen(
 
     val state = viewModel.state.value
 
-    Scaffold(
-        modifier = Modifier.padding(12.dp),
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                if (state.selectedNotes.isNotEmpty()) {
-                    state.selectedNotes.forEach {
-                        viewModel.onEvent(MainEvent.DeleteNote(it))
-                    }
-                } else {
-                    navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
-                }
-            }) {
+    val context = LocalContext.current
 
-                if (state.selectedNotes.isNotEmpty()) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete notes")
-                } else {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = state.selectedNotes.isEmpty(),
+                enter = scaleIn(),
+                exit = scaleOut(),
+            ) {
+                FloatingActionButton(
+                    onClick = {
+                        if (state.selectedNotes.isNotEmpty()) {
+                            state.selectedNotes.forEach {
+                                viewModel.onEvent(MainEvent.DeleteNote(it))
+                            }
+                        } else {
+                            navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
+                        }
+                    }
+                ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
                 }
             }
         },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
+        bottomBar = {
+            AnimatedVisibility(
+                visible = state.selectedNotes.isNotEmpty(),
+                enter = scaleIn(),
+                exit = scaleOut(),
+            ) {
+                BottomBar(
+                    deleteClicked = {
+                        //todo add dialog to ask user or to undo action
+                        state.selectedNotes.forEach {
+                            viewModel.onEvent(MainEvent.DeleteNote(it))
+                        }
+                    }, shareClicked = {
+                        var text = ""
+                        state.selectedNotes.forEach {
+                            text += it.title
+                            text += "\n"
+                            text += it.content
+                            text += "\n"
+                        }
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, text.trim())
+                            type = "text/plain"
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        context.startActivity(shareIntent)
+                    })
+            }
+        }
     ) { contentPadding ->
         Column(
             Modifier
@@ -69,6 +110,7 @@ fun MainScreen(
         ) {
 
             OutlinedTextField(
+                modifier = Modifier.padding(8.dp),
                 value = state.search,
                 onValueChange = { viewModel.onEvent(MainEvent.SearchNote(it)) },
                 placeholder = {
@@ -96,7 +138,8 @@ fun MainScreen(
             )
 
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 150.dp)
+                columns = GridCells.Adaptive(minSize = 150.dp),
+                modifier = Modifier.padding(8.dp)
             ) {
                 items(state.notes.size) { i ->
                     val note = state.notes[i]
