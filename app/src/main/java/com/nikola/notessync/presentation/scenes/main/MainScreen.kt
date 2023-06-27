@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
@@ -46,9 +47,20 @@ fun MainScreen(
         modifier = Modifier.padding(12.dp),
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
+                if (state.selectedNotes.isNotEmpty()) {
+                    state.selectedNotes.forEach {
+                        viewModel.onEvent(MainEvent.DeleteNote(it))
+                    }
+                } else {
+                    navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
+                }
             }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
+
+                if (state.selectedNotes.isNotEmpty()) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete notes")
+                } else {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
+                }
             }
         },
         floatingActionButtonPosition = FabPosition.End
@@ -59,43 +71,6 @@ fun MainScreen(
                 .padding(contentPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            if (state.selectedNotes.isNotEmpty()) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp, bottom = 12.dp),
-                    horizontalArrangement = Arrangement.Start
-                ) {
-
-
-                    OutlinedButton(onClick = {
-                        state.selectedNotes.forEach {
-                            viewModel.onEvent(MainEvent.DeleteNote(it))
-                        }
-                    }) {
-                        Text(text = state.selectedNotes.size.toString())
-                        Spacer(modifier = Modifier.width(5.dp))
-                        Text(text = "Selected")
-                    }
-                }
-            } else {
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(top = 8.dp, bottom = 12.dp),
-//                horizontalArrangement = Arrangement.Start
-//            ) {
-//
-//                OutlinedButton(onClick = {
-//                    navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
-//                }) {
-//                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = "New note")
-//                    Spacer(modifier = Modifier.width(4.dp))
-//                    Text(text = "New note")
-//                }
-//            }
-            }
 
             OutlinedTextField(
                 value = state.search,
