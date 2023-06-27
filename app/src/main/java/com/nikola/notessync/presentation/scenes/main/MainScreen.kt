@@ -2,30 +2,34 @@ package com.nikola.notessync.presentation.scenes.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.nikola.notessync.presentation.navigation.Screen
-import com.nikola.notessync.presentation.scenes.components.AddNoteButton
 import com.nikola.notessync.presentation.scenes.components.NoteCard
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
@@ -38,34 +42,98 @@ fun MainScreen(
 
     val state = viewModel.state.value
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        OutlinedTextField(
-            value = state.search,
-            onValueChange = { viewModel.onEvent(MainEvent.SearchNote(it)) },
-            placeholder = {
-                Text(text = "Search")
-            })
-
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = 150.dp)
+    Scaffold(
+        modifier = Modifier.padding(12.dp),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
+            }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add note")
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
+    ) {contentPadding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(state.notes.size + 1) { i ->
-                if (i == 0) {
-                    AddNoteButton {
-                        navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
+
+            if (state.selectedNotes.isNotEmpty()) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp, bottom = 12.dp),
+                    horizontalArrangement = Arrangement.Start
+                ) {
+
+
+                    OutlinedButton(onClick = {
+                        state.selectedNotes.forEach {
+                            viewModel.onEvent(MainEvent.DeleteNote(it))
+                        }
+                    }) {
+                        Text(text = state.selectedNotes.size.toString())
+                        Spacer(modifier = Modifier.width(5.dp))
+                        Text(text = "Selected")
                     }
-                } else {
+                }
+            } else {
+//            Row(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(top = 8.dp, bottom = 12.dp),
+//                horizontalArrangement = Arrangement.Start
+//            ) {
+//
+//                OutlinedButton(onClick = {
+//                    navController.navigate(Screen.NoteDetailScreen.route + "/${-1}")
+//                }) {
+//                    Icon(imageVector = Icons.Default.AddCircle, contentDescription = "New note")
+//                    Spacer(modifier = Modifier.width(4.dp))
+//                    Text(text = "New note")
+//                }
+//            }
+            }
+
+            OutlinedTextField(
+                value = state.search,
+                onValueChange = { viewModel.onEvent(MainEvent.SearchNote(it)) },
+                placeholder = {
+                    Text(text = "Search")
+                })
+
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 150.dp)
+            ) {
+                items(state.notes.size) { i ->
+                    val note = state.notes[i]
+                    val selected = state.selectedNotes.contains(note)
                     NoteCard(
-                        note = state.notes[i - 1]
-                    ) {
-                        navController.navigate(Screen.NoteDetailScreen.route + "/${state.notes[i - 1].id}")
-                    }
+                        note = note,
+                        clicked = {
+                            if (viewModel.state.value.selectedNotes.isEmpty()) {
+                                navController.navigate(Screen.NoteDetailScreen.route + "/${state.notes[i].id}")
+                            } else {
+                                if (selected) {
+                                    viewModel.onEvent(MainEvent.UnselectNote(note))
+                                } else {
+                                    viewModel.onEvent(MainEvent.SelectNote(note))
+                                }
+                            }
+                        },
+                        longClicked = {
+                            //todo set selectionState on
+                            if (viewModel.state.value.selectedNotes.contains(note)) {
+                                viewModel.onEvent(MainEvent.ClearSelectedNotes)
+                            } else {
+                                viewModel.onEvent(MainEvent.SelectNote(note))
+                            }
+                        },
+                        selected
+                    )
+
                 }
             }
         }

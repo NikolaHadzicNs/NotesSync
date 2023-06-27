@@ -4,5 +4,6 @@ import com.nikola.notessync.domain.model.Note
 
 data class MainState(
     val notes: List<Note> = emptyList(),
-    val search: String = ""
+    val search: String = "",
+    val selectedNotes: MutableList<Note> = mutableListOf()
 )

@@ -1,40 +1,54 @@
 package com.nikola.notessync.presentation.scenes.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nikola.notessync.domain.model.Note
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun NoteCard(note: Note, clicked: () -> Unit) {
+fun NoteCard(note: Note, clicked: () -> Unit, longClicked: () -> Unit, selected: Boolean = false) {
     Card(
         modifier = Modifier
             .aspectRatio(1f)
-            .padding(8.dp),
-        onClick = {
-            clicked()
-        },
+            .padding(8.dp)
+            .combinedClickable(
+                onClick = {
+                    clicked()
+                },
+                onLongClick = {
+                    longClicked()
+                }
+            ),
         colors = CardDefaults.cardColors(
             containerColor = Note.noteColors[note.noteColor],
             contentColor = Note.fontColors[note.fontColor]
         )
     ) {
-        Text(
-            modifier = Modifier
-                .padding(8.dp), text = note.title
-        )
+        if (selected) {
+            Icon(imageVector = Icons.Default.Delete, contentDescription = "Note selected for delete")
+        } else {
+            Text(
+                modifier = Modifier
+                    .padding(8.dp), text = note.title
+            )
 
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = note.content
-        )
+            Text(
+                modifier = Modifier.padding(8.dp),
+                text = note.content
+            )
+        }
+
     }
 }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nikola.notessync.domain.model.Note
 import com.nikola.notessync.domain.use_case.NoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -32,6 +33,8 @@ class MainViewModel @Inject constructor(
 
             }
             is MainEvent.DeleteNote -> {
+                val list = mutableListOf<Note>()
+                _state.value = state.value.copy(selectedNotes = list)
                 viewModelScope.launch {
                     noteUseCases.deleteNoteUseCase(event.note)
                 }
@@ -39,6 +42,25 @@ class MainViewModel @Inject constructor(
             is MainEvent.SearchNote -> {
                 _state.value = state.value.copy(search = event.search)
                 getNotes(event.search)
+            }
+
+            is MainEvent.SelectNote -> {
+                val list = mutableListOf<Note>()
+                list.addAll(state.value.selectedNotes)
+                list.add(event.note)
+                _state.value = state.value.copy(selectedNotes = list)
+            }
+
+            MainEvent.ClearSelectedNotes -> {
+                val list = mutableListOf<Note>()
+                _state.value = state.value.copy(selectedNotes = list)
+            }
+
+            is MainEvent.UnselectNote -> {
+                val list = mutableListOf<Note>()
+                list.addAll(state.value.selectedNotes)
+                list.remove(event.note)
+                _state.value = state.value.copy(selectedNotes = list)
             }
         }
     }
