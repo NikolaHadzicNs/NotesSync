@@ -1,6 +1,7 @@
 package com.nikola.notessync.presentation.scenes.components
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,10 +17,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.nikola.notessync.R
 import io.fotoapparat.Fotoapparat
 import io.fotoapparat.parameter.ScaleType
 import io.fotoapparat.selector.autoFocus
@@ -36,7 +35,12 @@ fun CameraPreview(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     var fotoapparat: Fotoapparat? = null
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+        contentAlignment = Alignment.BottomCenter
+    ) {
         AndroidView(
             modifier = modifier,
             factory = { context ->
@@ -60,12 +64,16 @@ fun CameraPreview(
                 cameraView
             })
 
-        IconButton(onClick = {
-            fotoapparat?.takePicture()?.toBitmap()?.whenAvailable {
-                onBitmap(it?.bitmap)
-            }
-        },
-        modifier = Modifier.size(100.dp).padding(10.dp)) {
+        IconButton(
+            onClick = {
+                fotoapparat?.takePicture()?.toBitmap()?.whenAvailable {
+                    onBitmap(it?.bitmap)
+                }
+            },
+            modifier = Modifier
+                .size(100.dp)
+                .padding(10.dp)
+        ) {
             Icon(
                 imageVector = Icons.Default.Camera,
                 contentDescription = "Scan",

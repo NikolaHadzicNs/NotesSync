@@ -85,6 +85,8 @@ dependencies {
     implementation group: 'io.fotoapparat.fotoapparat', name: 'fotoapparat', version: '2.7.0'
 
     implementation 'androidx.compose.material:material-icons-extended'
+
+    implementation "com.google.accompanist:accompanist-permissions:0.31.4-beta"
 }
 
 kapt {

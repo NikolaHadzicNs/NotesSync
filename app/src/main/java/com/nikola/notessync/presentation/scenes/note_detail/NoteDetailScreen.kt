@@ -1,5 +1,6 @@
 package com.nikola.notessync.presentation.scenes.note_detail
 
+import android.Manifest
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -37,11 +38,14 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import com.nikola.notessync.R
 import com.nikola.notessync.presentation.scenes.components.CameraPreview
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun NoteDetailScreen(
     navController: NavController,
@@ -50,6 +54,9 @@ fun NoteDetailScreen(
 ) {
 
     val state = viewModel.state
+
+    val permissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
+    var clickedCamWithoutPermission = false
 
     var showCam by remember {
         mutableStateOf(false)
@@ -84,7 +91,12 @@ fun NoteDetailScreen(
 
         IconButton(
             onClick = {
-                showCam = !showCam
+                if (permissionState.status.isGranted) {
+                    showCam = !showCam
+                } else {
+                    permissionState.launchPermissionRequest()
+                    clickedCamWithoutPermission = true
+                }
             },
             modifier = Modifier.padding(4.dp)
         ) {
