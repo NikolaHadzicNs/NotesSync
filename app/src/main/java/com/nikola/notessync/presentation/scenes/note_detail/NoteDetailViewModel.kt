@@ -19,6 +19,8 @@ class NoteDetailViewModel @Inject constructor(
     private val noteUseCases: NoteUseCases
 ) : ViewModel() {
 
+    var currentNote: Note? = null
+
     val ocr by lazy {
         TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
     }
@@ -31,8 +33,16 @@ class NoteDetailViewModel @Inject constructor(
         when (event) {
             is NoteDetailEvent.AddNote -> {
                 viewModelScope.launch {
-                    if (state.value.note.title.isNotEmpty() || state.value.note.content.isNotEmpty())
-                        noteUseCases.addNoteUseCase(state.value.note)
+                    if (state.value.note.title.isNotEmpty() || state.value.note.content.isNotEmpty()) {
+                        currentNote?.let {
+                            if (!(it.content == state.value.note.content && it.title == state.value.note.title)) {
+                                noteUseCases.addNoteUseCase(state.value.note)
+                            }
+                        } ?: run {
+                            noteUseCases.addNoteUseCase(state.value.note)
+                        }
+                    }
+
                 }
             }
 
@@ -70,6 +80,7 @@ class NoteDetailViewModel @Inject constructor(
             id?.let { id ->
                 noteUseCases.getNoteById(id)?.let {
                     _state.value = state.value.copy(note = it)
+                    currentNote = it.copy()
                     onNoteResult(it)
                 } ?: run {
 //                    _state.value = state.value.copy(
