@@ -11,15 +11,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.ads.MobileAds
 import com.nikola.notessync.presentation.navigation.NavGraph
 import com.nikola.notessync.presentation.scenes.main.MainScreen
 import com.nikola.notessync.presentation.ui.theme.NotesSyncTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MobileAds.initialize(
+            this
+        ) {
+
+        }
         setContent {
             WindowCompat.setDecorFitsSystemWindows(window, true)
             NotesSyncTheme {

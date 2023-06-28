@@ -87,6 +87,8 @@ dependencies {
     implementation 'androidx.compose.material:material-icons-extended'
 
     implementation "com.google.accompanist:accompanist-permissions:0.31.4-beta"
+
+    implementation 'com.google.android.gms:play-services-ads:22.1.0'
 }
 
 kapt {
