@@ -1,6 +1,9 @@
 package com.nikola.notessync.presentation.scenes.note_detail
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -109,17 +112,24 @@ fun NoteDetailScreen(
     }
 
     if (showCam) {
-        CameraPreview(modifier = Modifier.fillMaxSize()) {
-            showCam = !showCam
-            it?.let { btm ->
-                viewModel.getTextFromImage(btm)
+        AnimatedVisibility(visible = showCam, enter = fadeIn(), exit = fadeOut()) {
+            CameraPreview(modifier = Modifier.fillMaxSize()) {
+                showCam = !showCam
+                it?.let { btm ->
+                    viewModel.getTextFromImage(btm)
+                }
             }
         }
     }
 
+
     BackHandler(true) {
-        viewModel.onEvent(NoteDetailEvent.AddNote)
-        navController.navigateUp()
+        if (!showCam) {
+            viewModel.onEvent(NoteDetailEvent.AddNote)
+            navController.navigateUp()
+        } else {
+            showCam = !showCam
+        }
     }
 }
 

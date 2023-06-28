@@ -53,13 +53,12 @@ class NoteDetailViewModel @Inject constructor(
     fun getTextFromImage(btm: Bitmap) {
         val image = InputImage.fromBitmap(btm, 0)
         ocr.process(image)
-            ?.addOnSuccessListener {
-                // TODO: This is return of complete text, it can be returned in blocks
+            .addOnSuccessListener {
                 val text = state.value.note.content
                 val note = state.value.note.copy(content = text + it.text)
                 _state.value = state.value.copy(note = note)
             }
-            ?.addOnFailureListener {
+            .addOnFailureListener {
 
             }
     }
