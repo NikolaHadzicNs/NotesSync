@@ -65,10 +65,7 @@ fun NoteDetailScreen(
     viewModel: NoteDetailViewModel = hiltViewModel()
 ) {
 
-    val state = viewModel.state
-
     val permissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
-    var clickedCamWithoutPermission = false
 
     var showCam by remember {
         mutableStateOf(false)
@@ -108,7 +105,6 @@ fun NoteDetailScreen(
                     showCam = !showCam
                 } else {
                     permissionState.launchPermissionRequest()
-                    clickedCamWithoutPermission = true
                 }
             },
             modifier = Modifier.padding(4.dp)
@@ -167,6 +163,7 @@ fun NoteDetailScreen(
             factory = { context ->
                 val adView = AdView(context)
                 adView.setAdSize(AdSize.BANNER)
+                //TODO change this for production id should be replaced with one from console and test device code removed
                 adView.adUnitId = "ca-app-pub-3940256099942544/6300978111"
 
                 val testDeviceIds = Arrays.asList("5E4BDA8F2E396586E373C5DB3C8142D4")
