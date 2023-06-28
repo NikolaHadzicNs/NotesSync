@@ -83,6 +83,8 @@ dependencies {
     implementation 'com.google.mlkit:text-recognition:16.0.0'
 
     implementation group: 'io.fotoapparat.fotoapparat', name: 'fotoapparat', version: '2.7.0'
+
+    implementation 'androidx.compose.material:material-icons-extended'
 }
 
 kapt {

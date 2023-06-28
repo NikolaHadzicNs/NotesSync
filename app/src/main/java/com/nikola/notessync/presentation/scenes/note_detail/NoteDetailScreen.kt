@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,8 +55,23 @@ fun NoteDetailScreen(
         mutableStateOf(false)
     }
 
+    var contentFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(text = "")
+        )
+    }
+
+    var titleFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(text = "")
+        )
+    }
+
     LaunchedEffect(key1 = true) {
-        viewModel.getNote(noteId?.toInt())
+        viewModel.getNote(noteId?.toInt()) {
+            contentFieldValue = contentFieldValue.copy(text = it.content)
+            titleFieldValue = titleFieldValue.copy(text = it.title)
+        }
     }
 
     Column(
@@ -80,10 +96,13 @@ fun NoteDetailScreen(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = state.value.note.title,
-            onValueChange = { viewModel.onEvent(NoteDetailEvent.UpdateTitle(it)) },
+            value = titleFieldValue,
+            onValueChange = {
+                viewModel.onEvent(NoteDetailEvent.UpdateTitle(it.text))
+                titleFieldValue = it
+            },
             placeholder = {
-                Text(text = state.value.titlePlaceHolder)
+                Text(text = "Enter title")
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color.Transparent,
@@ -97,10 +116,13 @@ fun NoteDetailScreen(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxSize(),
-            value = state.value.note.content,
-            onValueChange = { viewModel.onEvent(NoteDetailEvent.UpdateContent(it)) },
+            value = contentFieldValue,
+            onValueChange = {
+                viewModel.onEvent(NoteDetailEvent.UpdateContent(it.text))
+                contentFieldValue = it
+            },
             placeholder = {
-                Text(text = state.value.contentPlaceHolder)
+                Text(text = "Enter content")
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = Color.Transparent,
@@ -113,10 +135,12 @@ fun NoteDetailScreen(
 
     if (showCam) {
         AnimatedVisibility(visible = showCam, enter = fadeIn(), exit = fadeOut()) {
-            CameraPreview(modifier = Modifier.fillMaxSize()) {
+            CameraPreview(modifier = Modifier.fillMaxSize()) { bitmap ->
                 showCam = !showCam
-                it?.let { btm ->
-                    viewModel.getTextFromImage(btm)
+                bitmap?.let { btm ->
+                    viewModel.getTextFromImage(btm) {
+                        contentFieldValue = contentFieldValue.copy(text = it.content)
+                    }
                 }
             }
         }

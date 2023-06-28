@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.nikola.notessync.domain.model.Note
 import com.nikola.notessync.domain.use_case.NoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -50,35 +51,37 @@ class NoteDetailViewModel @Inject constructor(
         }
     }
 
-    fun getTextFromImage(btm: Bitmap) {
+    fun getTextFromImage(btm: Bitmap, onFinish: (Note) -> Unit) {
         val image = InputImage.fromBitmap(btm, 0)
         ocr.process(image)
             .addOnSuccessListener {
                 val text = state.value.note.content
                 val note = state.value.note.copy(content = text + it.text)
                 _state.value = state.value.copy(note = note)
+                onFinish(note)
             }
             .addOnFailureListener {
 
             }
     }
 
-    fun getNote(id: Int?) {
+    fun getNote(id: Int?, onNoteResult: (Note) -> Unit) {
         viewModelScope.launch {
             id?.let { id ->
                 noteUseCases.getNoteById(id)?.let {
                     _state.value = state.value.copy(note = it)
+                    onNoteResult(it)
                 } ?: run {
-                    _state.value = state.value.copy(
-                        titlePlaceHolder = "Enter title",
-                        contentPlaceHolder = "Enter content"
-                    )
+//                    _state.value = state.value.copy(
+//                        titlePlaceHolder = "Enter title",
+//                        contentPlaceHolder = "Enter content"
+//                    )
                 }
             } ?: run {
-                _state.value = state.value.copy(
-                    titlePlaceHolder = "Enter title",
-                    contentPlaceHolder = "Enter content"
-                )
+//                _state.value = state.value.copy(
+//                    titlePlaceHolder = "Enter title",
+//                    contentPlaceHolder = "Enter content"
+//                )
             }
         }
     }
